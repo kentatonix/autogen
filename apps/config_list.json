@@ -1,0 +1,9 @@
+{
+    "config_list": [
+        {
+            "model": "ollama/qwen2:7b-instruct",
+            "api_key": "NotRequired",
+            "base_url": "http://llm:4000"
+        }
+    ]
+}
