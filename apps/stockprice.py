@@ -4,14 +4,10 @@ from pathlib import Path
 import autogen
 from autogen import AssistantAgent, UserProxyAgent
 
+json_open = open("./config_list.json")
+config_list_json = json.load(json_open)
 llm_config = {
-    "config_list": [
-        {
-            "model": "ollama/qwen2:7b-instruct",  # Loaded with LiteLLM command
-            "api_key": "NotRequired",  # Not needed
-            "base_url": "http://llm:4000",  # Your LiteLLM URL
-        }
-    ],
+    "config_list": config_list_json["config_list"],
     "cache_seed": None,  # Turns off caching, useful for testing different models
 }
 
