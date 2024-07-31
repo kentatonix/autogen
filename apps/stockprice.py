@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import autogen
-from autogen import AssistantAgent, UserProxyAgent
+from autogen import AssistantAgent, Cache, UserProxyAgent
 
 json_open = open("./config_list.json")
 config_list_json = json.load(json_open)
@@ -34,10 +34,11 @@ with autogen.coding.DockerCommandLineCodeExecutor(
         "user_proxy", human_input_mode="NEVER", code_execution_config={"executor": code_executor}
     )
 
-    # Start the chat
-    user_proxy.initiate_chat(
-        assistant,
-        message="Plot a chart of NVDA and TESLA stock price change YTD. Save the plot to a file called plot.png",
-    )
+    # Use Redis as cache
+    with Cache.redis(redis_url="redis://localhost:6379/0") as cache:
+        user_proxy.initiate_chat(
+            assistant,
+            message="Plot a chart of NVDA and TESLA stock price change YTD. Save the plot to a file called plot.png",
+        )
 
 autogen.runtime_logging.stop()
