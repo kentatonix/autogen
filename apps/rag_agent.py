@@ -34,21 +34,24 @@ assistant = RetrieveAssistantAgent(
 # This only applies to files under the directories in `docs_path`. Explicitly included files and urls will be chunked regardless of their types.
 # In this example, we set it to ["non-existent-type"] to only process markdown files. Since no "non-existent-type" files are included in the `websit/docs`,
 # no files there will be processed. However, the explicitly included urls will still be processed.
+print(os.path.join(os.path.abspath(""), "..", "website", "docs"))
 ragproxyagent = RetrieveUserProxyAgent(
     name="ragproxyagent",
-    human_input_mode="NEVER",
+    human_input_mode="qa",
     max_consecutive_auto_reply=3,
     retrieve_config={
-        "task": "code",
+        "task": "default",
         "docs_path": [
-            "https://raw.githubusercontent.com/microsoft/FLAML/main/website/docs/Examples/Integrate%20-%20Spark.md",
-            "https://raw.githubusercontent.com/microsoft/FLAML/main/website/docs/Research.md",
-            os.path.join(os.path.abspath(""), "..", "website", "docs"),
+            "/home/autogen/autogen/apps/2403.08299v1.pdf",
         ],
+        "collection_name": "ragchat3",
         "custom_text_types": ["non-existent-type"],
         "chunk_token_size": 2000,
-        "model": llm_config["config_list"][0]["model"],
+        # "model": llm_config["config_list"][0]["model"],
         "vector_db": "chroma",  # to use the deprecated `client` parameter, set to None and uncomment the line above
+        "embedding_model": "all-mpnet-base-v2",
+        "must_break_at_empty_line": False,
+        "get_or_create": True,
         "overwrite": False,  # set to True if you want to overwrite an existing collection
     },
     code_execution_config=False,  # set to False if you don't want to execute the code
@@ -61,7 +64,7 @@ assistant.reset()
 # the assistant receives the message and generates a response. The response will be sent back to the ragproxyagent for processing.
 # The conversation continues until the termination condition is met, in RetrieveChat, the termination condition when no human-in-loop is no code block detected.
 # With human-in-loop, the conversation will continue until the user says "exit".
-code_problem = "How can I use FLAML to perform a classification task and use spark to do parallel training. Train 30 seconds and force cancel jobs if time limit is reached."
+code_problem = "What is AutoDev"
 chat_result = ragproxyagent.initiate_chat(
     assistant, message=ragproxyagent.message_generator, problem=code_problem, search_string="spark"
 )  # search_string is used as an extra filter for the embeddings search, in this case, we only want to search documents that contain "spark".

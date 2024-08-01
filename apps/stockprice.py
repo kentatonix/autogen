@@ -35,10 +35,11 @@ with autogen.coding.DockerCommandLineCodeExecutor(
     )
 
     # Use Redis as cache
-    with Cache.redis(redis_url="redis://localhost:6379/0") as cache:
+    with Cache.redis(redis_url="redis://redis:6379/0") as cache:
         user_proxy.initiate_chat(
             assistant,
             message="Plot a chart of NVDA and TESLA stock price change YTD. Save the plot to a file called plot.png",
+            cache=cache,
         )
 
 autogen.runtime_logging.stop()
