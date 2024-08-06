@@ -95,6 +95,8 @@ def _llava_call_binary_with_config(
 ):
     if config["base_url"].find("0.0.0.0") >= 0 or config["base_url"].find("localhost") >= 0:
         llava_mode = "local"
+    elif config["base_url"].find("llm") >= 0:
+        llava_mode = "ollama"
     else:
         llava_mode = "remote"
 
@@ -129,6 +131,26 @@ def _llava_call_binary_with_config(
         for item in response:
             # https://replicate.com/yorickvp/llava-13b/versions/2facb4a474a0462c15041b78b1ad70952ea46b5ec6ad29583c0b29dbd4249591/api#output-schema
             output += item
+
+    elif llava_mode == "ollama":
+        headers = {"User-Agent": "LLaVA Client"}
+        pload = {
+            "model": config["model"],
+            "prompt": prompt,
+            "max_new_tokens": max_new_tokens,
+            "temperature": temperature,
+            "stop": SEP,
+            "images": images,
+        }
+
+        response = requests.post(config["base_url"], headers=headers, json=pload, stream=True)
+
+        output = ""
+        for chunk in response.iter_lines():
+            if chunk:
+                data = json.loads(chunk.decode("utf-8"))
+                # output = data["text"].split(SEP)[-1]
+                output += data["response"]
 
     # Remove the prompt and the space.
     output = output.replace(prompt, "").strip().rstrip()
