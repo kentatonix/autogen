@@ -195,3 +195,5 @@ apps/images
 apps/teach_db
 apps/evaluate
 apps/config_list.json
+apps/autogen_logs
+apps/Results

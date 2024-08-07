@@ -283,6 +283,7 @@ class SqliteLogger(BaseLogger):
                 "azure_endpoint",
                 "azure_ad_token",
                 "azure_ad_token_provider",
+                "code_execution_config",
             ),
             no_recursive=(Agent,),
         )

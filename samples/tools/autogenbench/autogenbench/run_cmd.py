@@ -302,8 +302,8 @@ echo "autogenbench version: {__version__}" > timestamp.txt
 
 # Create and activate the virtual environment
 # This is called in a subprocess, and will not impact the parent
-{sys.executable} -m venv .autogenbench_venv
-. .autogenbench_venv/bin/activate
+# {sys.executable} -m venv .autogenbench_venv
+# . .autogenbench_venv/bin/activate
 
 # Run the global init script if it exists
 if [ -f global_init.sh ] ; then
@@ -316,7 +316,7 @@ if [ -f scenario_init.sh ] ; then
 fi
 
 # Run the scenario
-pip install -r requirements.txt
+# pip install -r requirements.txt
 echo SCENARIO.PY STARTING !#!#
 timeout --preserve-status --kill-after {timeout  + 30}s {timeout}s python scenario.py
 EXIT_CODE=$?
