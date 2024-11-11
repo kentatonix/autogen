@@ -197,3 +197,5 @@ apps/evaluate
 apps/config_list.json
 apps/autogen_logs
 apps/Results
+apps/fastapi
+apps/web

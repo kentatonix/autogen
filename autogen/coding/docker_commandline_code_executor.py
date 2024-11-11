@@ -129,7 +129,19 @@ class DockerCommandLineCodeExecutor(CodeExecutor):
                 working_dir="/workspace",
             )
         else:
-            self._container = client.containers.get(container_name)
+            containers = client.containers.list(all=True)
+            if container_name in containers:
+                self._container = client.containers.get(container_name)
+            else:
+                self._container = client.containers.create(
+                    image,
+                    name=container_name,
+                    entrypoint="/bin/sh",
+                    tty=True,
+                    auto_remove=auto_remove,
+                    volumes={str(bind_dir.resolve()): {"bind": "/workspace", "mode": "rw"}},
+                    working_dir="/workspace",
+                )
         self._container.start()
 
         _wait_for_ready(self._container)
