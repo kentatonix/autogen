@@ -118,17 +118,18 @@ class DockerCommandLineCodeExecutor(CodeExecutor):
 
         if container_name is None:
             container_name = f"autogen-code-exec-{uuid.uuid4()}"
-
-        # Start a container from the image, read to exec commands later
-        self._container = client.containers.create(
-            image,
-            name=container_name,
-            entrypoint="/bin/sh",
-            tty=True,
-            auto_remove=auto_remove,
-            volumes={str(bind_dir.resolve()): {"bind": "/workspace", "mode": "rw"}},
-            working_dir="/workspace",
-        )
+            # Start a container from the image, read to exec commands later
+            self._container = client.containers.create(
+                image,
+                name=container_name,
+                entrypoint="/bin/sh",
+                tty=True,
+                auto_remove=auto_remove,
+                volumes={str(bind_dir.resolve()): {"bind": "/workspace", "mode": "rw"}},
+                working_dir="/workspace",
+            )
+        else:
+            self._container = client.containers.get(container_name)
         self._container.start()
 
         _wait_for_ready(self._container)
